@@ -43,8 +43,9 @@ def build_feed(post_preview, feed):
         feed += f"<pubDate>{(datetime.datetime.fromisoformat(post_preview['date_created'].replace('Z',''))).strftime('%a, %d %b %Y %H:%M:%S')} GMT</pubDate>\n"
         if post_preview['date_modified']:
             feed += f"<lastBuildDate>{(datetime.datetime.fromisoformat(post_preview['date_modified'].replace('Z',''))).strftime('%a, %d %b %Y %H:%M:%S')} GMT</lastBuildDate>\n"
-        # TODO: Remaining: tags
         feed += f"<description>{post_preview['content']}</description>"
+        for tag in post_preview['tags']:
+            feed += f"<category>{tag.text.strip().replace('#','')}</category>"
         feed += "</item>\n"
     else:
         print("Not building as building hasn't started/already ended.")
@@ -74,9 +75,12 @@ def get_post_details(post_preview, recursive=True):
     post_elements = ""
     for element in content:
         post_elements += html.escape(str(element))
-    tags = f"{descendants.find(class_=names['post_preview_tags_class']).string}".strip(
-    )
-    return {"url": url, "title": title, "date_created": date_created, "date_modified": date_modified, "content": post_elements}
+    tags = descendants.find(
+        class_=names['post_preview_tags_class']).find_all("a")
+    post_tags = []
+    for tag in tags:
+        post_tags.append(tag.text)
+    return {"url": url, "title": title, "date_created": date_created, "date_modified": date_modified, "content": post_elements, "tags": tags}
 
 
 start = time.perf_counter()
@@ -85,7 +89,7 @@ for post_preview in post_previews:
     feed = build_feed(get_post_details(post_preview), feed)
 feed = end_feed(feed)
 
-file = open("feed.txt", "w")
+file = open("feed-test.txt", "w")
 file.write(feed)
 end = time.perf_counter()
 print(f"Took {1000*(end-start)}ms.")
