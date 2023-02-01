@@ -1,0 +1,12 @@
+{
+  "url": "http://localhost:9000",
+  "names": {
+    "post_preview_class": "post-preview",
+    "post_preview_id_class": "post-preview__id",
+    "post_preview_title_class": "post-preview__title",
+    "post_preview_tags_class": "post-preview__tags",
+    "post_preview_content_class": "post-preview__content",
+    "post_preview_date_class": "post-preview__metadata"
+  },
+  "date_publish_regex": "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z"
+}
